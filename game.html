@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GAME LOGS // CHANNEL Y2KEE</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;700;900&family=Noto+Sans+SC:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* 针对子页面的微调，写在这里不影响主 style.css */
+        .sub-page-header { margin-bottom: 3rem; text-align: center; }
+        .back-btn { display: inline-block; background: var(--p4-black); color: var(--p4-yellow); padding: 10px 20px; font-family: var(--font-tech); font-weight: bold; text-decoration: none; transform: skew(-10deg); border: 2px solid var(--p4-white); margin-bottom: 2rem; transition: 0.3s; }
+        .back-btn:hover { background: var(--p4-white); color: var(--p4-red); transform: skew(-10deg) translate(-5px, -5px); box-shadow: 5px 5px 0 var(--p4-blue); }
+        .content-list { display: flex; flex-direction: column; gap: 2rem; }
+        .list-item { 
+        display: block; /* [新增] 让 a 标签变成块级元素，保持原有布局 */
+        text-decoration: none; /* [新增] 去掉链接默认下划线 */
+        color: var(--p4-black); /* [新增] 强制使用黑色文字，防止变成默认蓝链接 */
+        
+        border: 3px solid var(--p4-black); 
+        padding: 1.5rem; 
+        background: rgba(255,255,255,0.9); 
+        transform: skew(-2deg); 
+        transition: 0.2s; 
+        cursor: pointer; 
+    }
+        .list-item:hover { background: var(--p4-yellow); transform: skew(-2deg) translateX(-10px); box-shadow: 10px 10px 0 var(--p4-black); }
+        .item-date { font-family: var(--font-tech); font-weight: bold; color: var(--p4-red); }
+        .item-title { font-size: 1.5rem; font-weight: 900; margin: 0.5rem 0; }
+    </style>
+</head>
+<body>
+    <div class="crt-vignette"></div>
+    <div class="noise-texture"></div>
+    <div class="scanlines"></div>
+    
+    <div class="tv-frame sub-page-frame"></div>
+
+    <nav class="p4-top-nav" style="justify-content: center;">
+        <div class="nav-brand">GAME CHANNEL</div>
+    </nav>
+
+    <section class="full-screen-section bg-yellow" style="height: auto; min-height: 100vh; padding-top: 120px;">
+        <div class="section-content-wrapper">
+            
+            <a href="index.html" class="back-btn">◄ RETURN TO HOME</a>
+
+            <div class="profile-container p4-reveal active" style="display: block; width: 100%; max-width: 900px;">
+                <div class="sub-page-header">
+                    <h1 class="section-big-title" style="justify-content: center; font-size: 4rem;">DEV LOGS</h1>
+                    <div class="barcode-deco" style="margin: 0 auto;"></div>
+                </div>
+
+                <div class="content-list">
+                    <a href="https://www.bilibili.com/video/BV1v7SeBkExi/" target="_blank" class="list-item">
+                        <span class="item-date">2024.12.04 // 宣传片</span>
+                        <h2 class="item-title">安全出口</h2>
+                        <p>独立开发的Unreal第一人称微恐找异常...</p>
+                    </a>
+                    
+                    <a href="https://www.bilibili.com/video/BV1TG1MBjEcH/" target="_blank" class="list-item">
+                        <span class="item-date">2024.11.20 // 宣传片</span>
+                        <h2 class="item-title">Project: 传哪去了</h2>
+                        <p>一起做了一个搜得到，拿不起，带不出的搜打撤游戏...</p>
+                    </a>
+
+                    <a href="https://www.bilibili.com/video/BV1pTtRz5Ekh/" target="_blank" class="list-item">
+                        <span class="item-date">2024.10.15 // 实机演示</span>
+                        <h2 class="item-title">Mobius</h2>
+                        <p>在四维空间下坠一年后做出的游戏...</p>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="script.js"></script>
+</body>
+</html>

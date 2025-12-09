@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VISUAL ART // CHANNEL Y2KEE</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;700;900&family=Noto+Sans+SC:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .sub-page-header { margin-bottom: 3rem; text-align: center; }
+        .back-btn { display: inline-block; background: var(--p4-red); color: white; padding: 10px 20px; font-family: var(--font-tech); font-weight: bold; text-decoration: none; transform: skew(-10deg); border: 2px solid var(--p4-white); margin-bottom: 2rem; transition: 0.3s; }
+        .back-btn:hover { background: var(--p4-black); color: var(--p4-red); transform: skew(-10deg) translate(-5px, -5px); box-shadow: 5px 5px 0 var(--p4-white); }
+        
+        /* 红色网格展示 Art 作品 */
+        .art-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; }
+        .art-card { height: 250px; background: #000; position: relative; border: 4px solid var(--p4-white); overflow: hidden; transition: 0.3s; }
+        .art-card img { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; transition: 0.3s; }
+        .art-card:hover { transform: scale(1.05); box-shadow: 0 0 20px var(--p4-red); z-index: 10; border-color: var(--p4-red); }
+        .art-card:hover img { opacity: 1; filter: contrast(120%); }
+        .art-label { position: absolute; bottom: 0; left: 0; background: var(--p4-red); color: white; width: 100%; padding: 5px 10px; font-family: var(--font-tech); transform: translateY(100%); transition: 0.3s; }
+        .art-card:hover .art-label { transform: translateY(0); }
+
+        .bg-red-custom { 
+            background-color: var(--p4-red); 
+            background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(0,0,0,0.2) 10px, rgba(0,0,0,0.2) 20px);
+        }
+    </style>
+</head>
+<body>
+    <div class="crt-vignette"></div>
+    <div class="noise-texture"></div>
+    <div class="scanlines"></div>
+    
+    <div class="tv-frame sub-page-frame"></div>
+
+    <nav class="p4-top-nav" style="justify-content: center; background: var(--p4-red);">
+        <div class="nav-brand" style="color: white;">VISUAL EFFECTS</div>
+    </nav>
+
+    <section class="full-screen-section bg-red-custom" style="height: auto; min-height: 100vh; padding-top: 120px;">
+        <div class="section-content-wrapper">
+            
+            <a href="index.html" class="back-btn">◄ RETURN TO HOME</a>
+
+            <div class="profile-container p4-reveal active" style="display: block; width: 100%; max-width: 1000px; border-color: var(--p4-black); outline: 4px solid white;">
+                <div class="sub-page-header">
+                    <h1 class="section-big-title" style="justify-content: center; font-size: 4rem; color: var(--p4-red); text-shadow: 2px 2px 0 var(--p4-black);">GALLERY</h1>
+                    
+                    <div class="barcode-deco" style="margin: 0 auto; background: repeating-linear-gradient(90deg, var(--p4-red), var(--p4-red) 2px, transparent 2px, transparent 5px);"></div>
+                </div>  
+
+                <div class="art-grid">
+                    <div class="art-card">
+                        <img src="art/1.jpg" data-gif="art/1.gif" alt="Art 1">
+                        <div class="art-label">GLITCH_01.PNG</div>
+                    </div>
+                    <div class="art-card">
+                        <img src="https://via.placeholder.com/300/000000/FFFFFF" alt="Art 2">
+                        <div class="art-label">SHADER_TEST.GIF</div>
+                    </div>
+                    </div>
+
+                <div id="art-lightbox" class="art-lightbox">
+                    <div class="lightbox-backdrop"></div>
+                    <img id="lightbox-img" src="" alt="Full View">
+                    <div class="lightbox-close">✖ CLOSE VIEW</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="script.js"></script>
+</body>
+</html>

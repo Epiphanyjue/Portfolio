@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BLOG ARCHIVE // CHANNEL Y2KEE</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;700;900&family=Noto+Sans+SC:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .sub-page-header { margin-bottom: 3rem; text-align: center; }
+        .back-btn { display: inline-block; background: var(--p4-blue); color: white; padding: 10px 20px; font-family: var(--font-tech); font-weight: bold; text-decoration: none; transform: skew(-10deg); border: 2px solid var(--p4-white); margin-bottom: 2rem; transition: 0.3s; }
+        .back-btn:hover { background: var(--p4-white); color: var(--p4-blue); transform: skew(-10deg) translate(-5px, -5px); box-shadow: 5px 5px 0 var(--p4-black); }
+        .content-list { display: flex; flex-direction: column; gap: 2rem; }
+        /* 蓝色主题列表项 */
+    /* 蓝色主题列表项 */
+        .list-item { 
+        display: block; /* [新增] */
+        text-decoration: none; /* [新增] */
+        
+        border: 3px solid var(--p4-blue); 
+        padding: 1.5rem; 
+        background: rgba(255,255,255,0.95); 
+        transform: skew(-2deg); 
+        transition: 0.2s; 
+        cursor: pointer; 
+        color: var(--p4-blue); /* 原有的颜色设置保留即可 */
+    }
+        .list-item:hover { background: var(--p4-blue); color: white; transform: skew(-2deg) translateX(-10px); box-shadow: 10px 10px 0 rgba(0,0,0,0.5); }
+        .item-date { font-family: var(--font-tech); font-weight: bold; opacity: 0.7; }
+        .item-title { font-size: 1.5rem; font-weight: 900; margin: 0.5rem 0; }
+        /* 蓝色波点背景 */
+        .bg-blue-custom { 
+            background-color: var(--p4-blue); 
+            background-image: radial-gradient(#fff 15%, transparent 16%);
+            background-size: 20px 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="crt-vignette"></div>
+    <div class="noise-texture"></div>
+    <div class="scanlines"></div>
+    
+    <div class="tv-frame sub-page-frame"></div>
+
+    <nav class="p4-top-nav" style="justify-content: center; background: var(--p4-blue);">
+        <div class="nav-brand" style="color: white;">THINK & WRITE</div>
+    </nav>
+
+    <section class="full-screen-section bg-blue-custom" style="height: auto; min-height: 100vh; padding-top: 120px;">
+        <div class="section-content-wrapper">
+            
+            <a href="index.html" class="back-btn">◄ RETURN TO HOME</a>
+
+            <div class="profile-container p4-reveal active" style="display: block; width: 100%; max-width: 900px; border-color: var(--p4-blue); outline-color: white;">
+                <div class="sub-page-header">
+                    <h1 class="section-big-title" style="justify-content: center; font-size: 4rem; color: var(--p4-blue);">ARTICLES</h1>
+                    <div class="barcode-deco" style="margin: 0 auto; background: repeating-linear-gradient(90deg, var(--p4-blue), var(--p4-blue) 2px, transparent 2px, transparent 5px);"></div>
+                </div>
+
+                <div class="content-list">
+                    <a href="https://www.notion.so/2a7ddc0e6928806989cce6d13d21f692?source=copy_link" target="_blank" class="list-item">
+                        <span class="item-date">2024.12.01 // PHILOSOPHY</span>
+                        <h2 class="item-title">如何避免玩家不舍得使用一次性道具？</h2>
+                        <p>综述不同游戏在消耗品设计上的巧思...</p>
+                    </a>
+                    
+                    <a href="https://zhuanlan.zhihu.com/p/1933488776967090690" target="_blank" class="list-item">
+                        <span class="item-date">2024.11.15 // LIFE</span>
+                        <h2 class="item-title">游戏系统拆解--AFK:Journey</h2>
+                        <p>公式化拆解数值卡牌养成游戏。</p>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="script.js"></script>
+</body>
+</html>
