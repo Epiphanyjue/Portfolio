@@ -110,15 +110,34 @@ a:hover, .sub-capsule:hover, .work-card:hover, .category-item:hover, .date-widge
     font-size: 1.1rem; color: var(--p4-yellow); padding: 8px 15px;
     position: relative; transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     transform: skewX(-15deg); display: flex; align-items: baseline; gap: 5px;
+    transform-origin: center;
 }
 
 .nav-item small { font-size: 0.8rem; opacity: 0.6; font-weight: normal; }
 
 .nav-item:hover {
-    background: var(--current-theme-color); color: var(--current-theme-bg);
-    box-shadow: 5px 5px 0 var(--current-theme-bg); 
-    transform: skewX(-15deg) translateY(-3px) scale(1.1);
-    z-index: 10;
+    background: var(--p4-black);
+    color: var(--p4-yellow);
+    /* [新增] 瞬间倾斜回正 + 剧烈边框 */
+    transform: skewX(-15deg) scale(1.2) rotate(-2deg); 
+    box-shadow: 
+        4px 4px 0 var(--p4-red),
+        -4px -4px 0 var(--p4-blue);
+    border: 2px solid var(--p4-white);
+    z-index: 200;
+}
+
+/* 激活状态更加显眼 */
+.nav-item.active {
+    background: var(--p4-red) !important;
+    color: var(--p4-white) !important;
+    animation: p4-pulse-border 1s infinite;
+}
+
+@keyframes p4-pulse-border {
+    0% { box-shadow: 0 0 0 0 rgba(230, 0, 51, 0.7); }
+    70% { box-shadow: 0 0 0 10px rgba(230, 0, 51, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(230, 0, 51, 0); }
 }
 
 /* ==========================================================================
@@ -326,32 +345,122 @@ a:hover, .sub-capsule:hover, .work-card:hover, .category-item:hover, .date-widge
 }
 
 
-/* --- 日期组件样式 (已恢复静态) --- */
+/* 定义常驻悬浮动画：缓慢上下浮动 + 偶尔的故障抽搐 */
+@keyframes p4-hud-float-glitch {
+    0%   { transform: skew(-10deg) translateY(0); }
+    50%  { transform: skew(-10deg) translateY(-6px); }
+    90%  { transform: skew(-10deg) translateY(0); }
+    
+    /* 故障抽搐瞬间 */
+    92%  { transform: skew(-20deg) translateX(4px); } 
+    94%  { transform: skew(-5deg) translateX(-4px); } 
+    96%  { transform: skew(-10deg) translateY(0); }
+    100% { transform: skew(-10deg) translateY(0); }
+}
+
+/* 定义 Hover 聚焦震动：快速的高频抖动 */
+@keyframes p4-focus-shake {
+    0% { transform: skew(-10deg) scale(1.1) translate(0, 0); }
+    25% { transform: skew(-10deg) scale(1.1) translate(1px, 1px); }
+    50% { transform: skew(-10deg) scale(1.1) translate(-1px, -1px); }
+    75% { transform: skew(-10deg) scale(1.1) translate(-1px, 1px); }
+    100% { transform: skew(-10deg) scale(1.1) translate(1px, -1px); }
+}
+
 .date-widget {
     position: absolute; top: 80px; right: 2rem;
     font-family: var(--font-tech); font-weight: 900;
     font-size: 2.2rem;
     padding: 15px 35px;
+    
+    /* 基础形状与边框 */
     transform: skew(-10deg);
-    border: 2px solid var(--p4-white);
-    box-shadow: 10px 10px 0 rgba(0,0,0,0.5);
-    z-index: 1050; cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    user-select: none; 
-    color: var(--current-date-text); 
+    border: 3px solid var(--p4-white);
     background: var(--current-date-color);
-    animation: none;
+    color: var(--current-date-text);
+    
+    /* 阴影与层级 */
+    box-shadow: 8px 8px 0 rgba(0,0,0,0.5);
+    z-index: 1050; 
+    cursor: pointer;
+    user-select: none; 
+    
+    /* [新增] 应用常驻动画：4秒一个循环 */
+    animation: p4-hud-float-glitch 4s ease-in-out infinite;
+    
+    /* 平滑过渡颜色变化 */
+    transition: background 0.2s, color 0.2s, border-color 0.2s, box-shadow 0.2s;
 }
-.date-widget:hover {
-    transform: skew(-10deg) translate(-4px, -4px);
-    box-shadow: 14px 14px 0 rgba(0,0,0,0.6); border-color: #fff;
+/* 幽灵边框装饰 (Ghost Border) - 增加层次感 */
+.date-widget::before {
+    content: '';
+    position: absolute; top: -6px; left: -6px; right: -6px; bottom: -6px;
+    border: 1px dashed var(--p4-white);
+    opacity: 0.3;
+    transform: skew(2deg); /* 微妙的错位 */
+    pointer-events: none;
+    transition: all 0.3s;
 }
 
-/* --- 侧边栏模式 --- */
+/* --- Hover 状态增强 [修改版] --- */
+.date-widget:hover {
+    /* [修改] 背景改为黑色 */
+    background: var(--p4-white);
+    /* [修改] 字体颜色改为当前主题色 (由 JS 动态控制变量) */
+    color: var(--current-date-color); 
+    /* [适配] 边框颜色跟随字体，保持高亮感 */
+    border-color: var(--current-date-color);
+    
+    /* [适配] 阴影变成白+蓝 (因为背景变黑了，必须把原来的黑色阴影改为白色才能看见) */
+    box-shadow: 
+        6px 6px 0 var(--p4-white),
+        -4px -4px 0 var(--p4-blue);
+    
+    /* 动画保持不变 */
+    animation: p4-focus-shake 0.2s steps(4) infinite;
+}
+
+.date-widget:hover::before {
+    opacity: 1;
+    /* [适配] 背景变黑后，内部的虚线装饰框改为白色以保证可见度 */
+    border-color: var(--p4-white);
+    top: 5px; left: 5px; 
+}
+
+/* 注意：由于 .sidebar-mode 下的 .date-widget 样式在 style.css 后方定义，
+   如果侧边栏模式下样式异常，请确保 sidebar-mode 内没有强制覆盖 animation 属性为 none。
+   (原代码中 sidebar-mode 移除了 top/right，但保留了相对定位，动画应该能兼容)
+*/
+
+/* --- 侧边栏模式 (修改后) --- */
 .p4-top-nav.sidebar-mode {
     top: 50%; bottom: auto; right: 3rem; left: auto; width: auto; height: auto;
     background: transparent; border-bottom: none; box-shadow: none;
-    transform: translateY(-50%); flex-direction: column; align-items: flex-end; gap: 0;
+    /* [修改] 增加 transform 过渡效果，确保收缩/展开顺滑 */
+    transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.5s ease;
+    
+    transform: translateY(-50%); 
+    flex-direction: column; align-items: flex-end; gap: 0;
+}
+
+/* [修改] 侧边栏最小化状态 */
+.p4-top-nav.sidebar-mode.minimized {
+    /* 向右平移，使其看起来像缩进去了 */
+    transform: translateY(-50%) translateX(160px); /* 稍微减少一点距离，确保边缘能被摸到 */
+    opacity: 0.4;
+    
+    /* [关键修复] 必须允许鼠标事件，否则无法检测到 hover */
+    pointer-events: auto; 
+    
+    /* 可选：增加一个透明背景区域以扩大鼠标感应范围 */
+    background: rgba(0,0,0,0); 
+}
+
+/* [新增] 鼠标靠近右侧/悬停在导航栏上时，强制恢复 (CSS 辅助 JS) */
+.p4-top-nav.sidebar-mode:hover {
+    transform: translateY(-50%) translateX(0) !important;
+    opacity: 1 !important;
+    pointer-events: auto;
 }
 .p4-top-nav.sidebar-mode .nav-brand { display: none; }
 .p4-top-nav.sidebar-mode .date-widget { position: relative; top: auto; right: auto; margin-bottom: 2rem; order: 1; }
@@ -428,8 +537,8 @@ a:hover, .sub-capsule:hover, .work-card:hover, .category-item:hover, .date-widge
 .floating-shape { position: absolute; z-index: -1; opacity: 0.15; pointer-events: none; }
 @keyframes float-slow-bob { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-40px) rotate(15deg); } }
 @keyframes float-drift-horiz { 0% { transform: translateX(0) rotate(0deg) scale(1); } 50% { transform: translateX(60px) rotate(90deg) scale(1.1); } 100% { transform: translateX(0) rotate(180deg) scale(1); } }
-.shape-p4-1 { width: 120px; height: 120px; top: 15%; left: 8%; background: var(--p4-black); clip-path: polygon(50% 0%, 0% 100%, 100% 100%); animation: float-slow-bob 12s ease-in-out infinite; }
-.shape-p4-2 { width: 100px; height: 100px; bottom: 25%; right: 12%; background: var(--p4-red); clip-path: polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%); animation: float-drift-horiz 18s ease-in-out infinite reverse; }
+.shape-p4-1 { width: 120px; height: 120px; top: 15%; left: 8%; background: var(--p4-black); clip-path: polygon(50% 0%, 0% 100%, 100% 100%); animation: float-slow-bob 12s ease-in-out infinite; animation: float-slow-bob 12s ease-in-out infinite, glitch-twitch 5s infinite 2s;}
+.shape-p4-2 { width: 100px; height: 100px; bottom: 25%; right: 12%; background: var(--p4-red); clip-path: polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%); animation: float-drift-horiz 18s ease-in-out infinite reverse; animation: float-drift-horiz 18s ease-in-out infinite reverse, glitch-twitch 7s infinite 0.5s;}
 
 .landing-container { display: grid; grid-template-columns: 1.2fr 1fr; gap: 4rem; max-width: 1400px; width: 90%; align-items: center; }
 .hero-text-group { position: relative; }
@@ -728,6 +837,7 @@ a:hover, .sub-capsule:hover, .work-card:hover, .category-item:hover, .date-widge
     
     /* [关键修复] 设置默认层级为 1，确保未激活时层级较低 */
     z-index: 1; 
+    overflow: hidden;
 }
 
 .work-card.center-focus {
@@ -752,6 +862,44 @@ a:hover, .sub-capsule:hover, .work-card:hover, .category-item:hover, .date-widge
     
     /* [关键修复] 提升层级至 100，确保放大时绝对覆盖旁边的卡片 */
     z-index: 100; 
+}
+/* [新增] 电视噪点层 (默认隐藏) */
+.work-card::after {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    /* 生成噪点纹理 */
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.5' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.4'/%3E%3C/svg%3E");
+    background-size: 100px 100px;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 50;
+    mix-blend-mode: overlay; /* 叠加模式 */
+    transition: opacity 0.1s;
+}
+
+/* --- Work Card Hover 增强：噪点 + 缩放 + 边框闪烁 --- */
+.work-card:hover { 
+    opacity: 1;
+    transform: skewX(0deg) scale(1.1); /* 稍微减小放大倍率，避免模糊 */
+    filter: contrast(120%) brightness(110%); /* 高亮 */
+    z-index: 100;
+    border-color: var(--p4-yellow);
+    box-shadow: 
+        10px 10px 0 var(--p4-black),
+        -2px -2px 0 var(--p4-red), /* P4 经典的红黑黄配色阴影 */
+        2px 2px 0 var(--p4-blue);
+}
+
+.work-card:hover::after {
+    opacity: 0.6; /* 显示噪点 */
+    animation: static-noise-anim 0.2s steps(4) infinite; /* 噪点跳动 */
+}
+
+/* 图片在 Hover 时轻微错位 */
+.work-card:hover .work-img img {
+    transform: scale(1.05) translate(-2px, -2px);
+    transition: transform 0.1s steps(2);
 }
 
 .work-img { height: 70%; background: #333; display: flex; align-items: center; justify-content: center; overflow: hidden; border-bottom: 4px solid var(--p4-black); }
@@ -1058,7 +1206,7 @@ a:hover, .sub-capsule:hover, .work-card:hover, .category-item:hover, .date-widge
 
 /* B. 内部中心图标：变色 */
 .p4-top-nav.sidebar-mode .highlight-btn.auto-active:hover .center-icon {
-    color: var(--p4-red) !important;
+    color: var(--current-theme-color) !important;
     text-shadow: 0 0 5px var(--p4-red);
 }
 
@@ -1170,39 +1318,72 @@ a:hover, .sub-capsule:hover, .work-card:hover, .category-item:hover, .date-widge
 }
 
 /* =========================================
-   [NEW] 子页面标题播放器交互样式
+   [NEW] 子页面标题播放器交互样式 (UPDATED)
    ========================================= */
 .section-big-title {
-    cursor: pointer; /* 鼠标变手型 */
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    user-select: none; /* 防止快速点击时选中文本 */
+    /* [修改] 默认为普通光标，仅在子页面变为手型 */
+    cursor: default; 
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* 更舒缓的贝塞尔曲线 */
+    user-select: none; 
 }
 
-/* Hover 效果：整体位移 + 变色 */
+/* --- 1. 首页标题 RECENT HIGHLIGHTS: 移除所有晃动特效 --- */
+/* 保持干净、稳定，不再有故障动画 */
 .section-big-title:hover {
-    transform: translateX(15px) skewX(-5deg); /* P4 风格的倾斜位移 */
-    text-shadow: 5px 5px 0 rgba(0,0,0,0.2);
-    /* 强制使用当前页面的主题色 (由 JS 动态设置的变量) */
+    animation: none !important; 
+    color: inherit !important; 
+    cursor: default;
+    /* 可选：如果你希望完全不动，可以删除下面这行；保留这行会有极微小的位移反馈 */
+    transform: translateX(5px); 
+    text-shadow: inherit;
+}
+
+/* --- 2. 子页面播放按钮专用样式 (必须在 sub-page-header 内) --- */
+.sub-page-header .section-big-title {
+    cursor: pointer; /* 这里的确是按钮，显示手型 */
+}
+
+/* [新增] 平和舒缓的 P4 风格 Hover 效果 */
+.sub-page-header .section-big-title:hover {
+    /* 移除之前的动画，改为属性平滑过渡 */
+    animation: none !important;
+    
+    /* 视觉效果：
+       1. Scale: 微微放大 (1.05倍)
+       2. Skew: 微微倾斜 (-5度) 增加动感
+       3. Letter-spacing: 字体间距由默认变宽到 8px，模拟“深呼吸”的感觉
+    */
+    transform: scale(1.05) skewX(-5deg); 
+    letter-spacing: 8px; 
+    
+    /* 颜色：平滑变为当前页面的主题色 (红/蓝/黄) */
     color: var(--current-theme-color) !important; 
+    
+    /* 阴影：柔和的半透明阴影，而非剧烈的黑影 */
+    text-shadow: 4px 4px 0 rgba(0,0,0,0.15); 
 }
 
-/* Hover 时三角形也变色放大 */
-.section-big-title:hover::before {
+/* 三角形图标的温和互动 */
+.sub-page-header .section-big-title:hover::before {
     color: var(--current-theme-color);
-    transform: scale(1.2);
+    /* 图标稍微向右移动，引导点击 */
+    transform: translateX(8px) scale(1.1);
+    transition: all 0.4s ease;
 }
 
-/* [关键] 播放中状态：通过 JS 添加 .playing 类 */
+/* [关键] 播放中状态：呼吸灯效果改为更慢、更柔和 */
 .section-big-title.playing::before {
     content: '❚❚'; /* 将三角形 ▶ 变为暂停符号 ❚❚ */
     color: var(--current-theme-color);
-    animation: p4-pulse 1s infinite alternate; /* 呼吸灯效果 */
+    /* 时间由 1s 改为 2s，更加悠闲 */
+    animation: p4-pulse 2s infinite ease-in-out; 
 }
 
 /* 简单的呼吸动画 */
 @keyframes p4-pulse {
-    from { opacity: 1; transform: scale(1); }
-    to { opacity: 0.6; transform: scale(1.1); }
+    0% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.7; transform: scale(1.1); }
+    100% { opacity: 1; transform: scale(1); }
 }
 /* =========================================
    [NEW] 首页导航栏 Brand Hover 效果
@@ -1334,4 +1515,56 @@ a.nav-brand:hover {
     background: var(--p4-red);
     transform: skewX(-10deg) scale(1.1);
     box-shadow: 5px 5px 0 var(--p4-white);
+}
+
+/* =========================================
+   [NEW] P4 & Glitch 核心动效库
+   ========================================= */
+
+/* 1. RGB 色散文字抖动 (用于标题 Hover) */
+@keyframes p4-rgb-glitch {
+    0% { text-shadow: 2px 0 var(--p4-red), -2px 0 var(--p4-blue); transform: skew(-5deg); }
+    25% { text-shadow: -3px -3px var(--p4-red), 3px 3px var(--p4-blue); transform: skew(-5deg) translate(-2px, 1px); }
+    50% { text-shadow: 2px -1px var(--p4-red), -2px 1px var(--p4-blue); transform: skew(-5deg) translate(2px, -1px); }
+    75% { text-shadow: -2px -2px var(--p4-red), 2px 2px var(--p4-blue); transform: skew(-5deg) translate(-1px, 2px); }
+    100% { text-shadow: 2px 0 var(--p4-red), -2px 0 var(--p4-blue); transform: skew(-5deg); }
+}
+
+/* 2. 背景几何体随机抽搐 (用于 shape-p4) */
+@keyframes glitch-twitch {
+    0%, 95%, 100% { transform: translate(0, 0) skew(0deg); filter: hue-rotate(0deg); }
+    96% { transform: translate(-10px, 5px) skew(10deg); filter: hue-rotate(90deg); opacity: 0.8; }
+    97% { transform: translate(5px, -10px) skew(-20deg); filter: hue-rotate(180deg); opacity: 1; }
+    98% { transform: translate(0, 5px) skew(5deg); filter: invert(1); }
+    99% { transform: translate(-5px, 0) skew(-5deg); filter: hue-rotate(270deg); }
+}
+
+/* 3. 电视雪花噪点动画 (用于 Work 卡片 Hover) */
+@keyframes static-noise-anim {
+    0% { background-position: 0 0; }
+    100% { background-position: 100% 100%; }
+}
+/* =========================================
+   [NEW] 全局统一放大 Return Home 按钮
+   ========================================= */
+.back-btn {
+    /* 使用 !important 强制覆盖 HTML 中的内联样式 */
+    padding: 15px 40px !important;   /* 增加内边距 (原为 10px 20px) */
+    font-size: 1.25rem !important;   /* 增大字体 (原为默认大小) */
+    letter-spacing: 2px;             /* 增加字间距，更有张力 */
+    border-width: 3px !important;    /* 加粗边框 */
+    
+    /* 优化版型：确保文字垂直居中 */
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    
+    /* 保持原有的倾斜，但稍微增加一点过渡时间 */
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+}
+
+/* 增强 Hover 时的放大反馈，使其与大尺寸匹配 */
+.back-btn:hover {
+    /* 保持原有的左上角位移，但稍微增加缩放比例 */
+    transform: skew(-10deg) translate(-5px, -5px) scale(1.05) !important;
 }

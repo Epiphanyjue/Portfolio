@@ -65,10 +65,14 @@ document.addEventListener('DOMContentLoaded', () => {
         //    return; 
         // }
 
-        if (titleBtn && musicFile) {
-            const audio = new Audio(musicFile);
-            audio.loop = true;
-            let isPlaying = false;
+            if (titleBtn && musicFile) {
+                        const audio = new Audio(musicFile);
+                        
+                        // [新增]在这里添加这行代码控制音量
+                        audio.volume = 0.5; // 同样建议设置小一点
+                        
+                        audio.loop = true;
+                        let isPlaying = false;
 
             titleBtn.addEventListener('click', () => {
                 if (isPlaying) {
@@ -253,7 +257,7 @@ document.addEventListener('DOMContentLoaded', () => {
         updateDate();
         navBar.appendChild(dateDiv);
 
-        // --- 恢复的点击切换颜色逻辑 ---
+// --- 恢复的点击切换颜色逻辑 ---
         // P4 主题色定义
         const themes = [
             { color: '#FFE600', text: '#111111' }, // 黄 (默认)
@@ -261,18 +265,48 @@ document.addEventListener('DOMContentLoaded', () => {
             { color: '#0044CC', text: '#FFFFFF' }, // 蓝
             { color: '#009944', text: '#FFFFFF' }  // 绿
         ];
-        let themeIndex = 0;
+        
+        // [修改 1] 初始化时尝试从 localStorage 读取索引，如果没有则默认为 0
+        let themeIndex = parseInt(localStorage.getItem('p4_user_theme_index')) || 0;
 
-        dateDiv.addEventListener('click', () => {
-            themeIndex = (themeIndex + 1) % themes.length;
-            const t = themes[themeIndex];
-            
-            // 更新 CSS 变量，立刻改变全站高亮色
+        // [修改 2] 定义一个应用颜色的内部函数
+        const applyThemeByIndex = (index) => {
+            const t = themes[index];
             document.documentElement.style.setProperty('--current-date-color', t.color);
             document.documentElement.style.setProperty('--current-date-text', t.text);
             document.documentElement.style.setProperty('--current-theme-color', t.color);
             document.documentElement.style.setProperty('--current-theme-bg', t.text);
+        };
+
+        // [修改 3] 页面加载时：仅在非子页面（即首页）恢复保存的颜色
+        // 这样做的目的是防止覆盖 art/blog/game 子页面强制的专属红/蓝/黄主题色
+        const currentUrl = window.location.href;
+        if (!currentUrl.includes('art.html') && !currentUrl.includes('blog.html') && !currentUrl.includes('game.html')) {
+            // 只有当存的不是默认黄色(0)时才执行替换，避免不必要的闪烁
+            if (themeIndex !== 0) {
+                applyThemeByIndex(themeIndex);
+            }
+        }
+
+        dateDiv.addEventListener('click', () => {
+            themeIndex = (themeIndex + 1) % themes.length;
+            
+            // [修改 4] 每次点击时保存新的索引到 localStorage
+            localStorage.setItem('p4_user_theme_index', themeIndex);
+            
+            applyThemeByIndex(themeIndex);
         });
+
+        // dateDiv.addEventListener('click', () => {
+        //     themeIndex = (themeIndex + 1) % themes.length;
+        //     const t = themes[themeIndex];
+            
+        //     // 更新 CSS 变量，立刻改变全站高亮色
+        //     document.documentElement.style.setProperty('--current-date-color', t.color);
+        //     document.documentElement.style.setProperty('--current-date-text', t.text);
+        //     document.documentElement.style.setProperty('--current-theme-color', t.color);
+        //     document.documentElement.style.setProperty('--current-theme-bg', t.text);
+        // });
     };
     createDateWidget();
 
@@ -441,17 +475,25 @@ document.addEventListener('DOMContentLoaded', () => {
         updateButtonState();
     }
 
-    // =========================================
+// =========================================
     // --- 6. [NEW] START GAME 按钮特殊逻辑 ---
     // =========================================
     const startGameBtn = document.getElementById('start-game-btn');
     if (startGameBtn) {
         startGameBtn.addEventListener('click', (e) => {
-            e.preventDefault(); // 阻止默认锚点跳转
+            e.preventDefault(); 
             
-            // 可以在这里添加音效，例如: new Audio('sound_enter.mp3').play();
-            
-            // 模拟短暂的 "系统启动" 延迟
+            // [新增功能] 1. 播放开始音效/音乐
+            // 请确保你的 music 文件夹下有 start.mp3 文件
+            const startAudio = new Audio('music/start.mp3');
+            // 如果你希望音量小一点，可以解开下面这行的注释并调整数值(0.0 - 1.0)
+            startAudio.volume = 0.5; 
+            startAudio.play().catch(error => console.log("播放失败，请检查浏览器自动播放策略或文件路径:", error));
+
+            // [原有逻辑] 2. 添加点击后的剧烈收缩类 (需配合 CSS)
+            startGameBtn.classList.add('clicked-anim');
+
+            // [原有逻辑] 3. 模拟 "系统启动" 延迟
             document.body.style.cursor = 'wait';
             
             setTimeout(() => {
@@ -461,7 +503,65 @@ document.addEventListener('DOMContentLoaded', () => {
                 if(profileSec) {
                     profileSec.scrollIntoView({ behavior: 'smooth' });
                 }
-            }, 300); // 300ms 延迟，配合 CSS 动画
+                // 动画结束后移除类
+                setTimeout(() => startGameBtn.classList.remove('clicked-anim'), 500);
+            }, 500); // 稍微延长到 500ms 让动画播完
         });
     }
+    // =========================================
+    // --- 7. [NEW] 侧边栏自动收缩/展开逻辑 ---
+    // =========================================
+    const initSidebarAutoShrink = () => {
+        let shrinkTimer;
+        const nav = document.querySelector('.p4-top-nav');
+
+        // 核心函数：恢复展开
+        const expandSidebar = () => {
+            if (nav.classList.contains('sidebar-mode')) {
+                nav.classList.remove('minimized');
+            }
+        };
+
+        // 核心函数：尝试收缩 (设置延时)
+        const scheduleShrink = () => {
+            // 清除之前的计时器
+            clearTimeout(shrinkTimer);
+            
+            // 只有在侧边栏模式下才执行收缩
+            if (nav.classList.contains('sidebar-mode')) {
+                // 设置 1.5 秒无操作后自动收缩
+                shrinkTimer = setTimeout(() => {
+                    // 如果此时鼠标没有悬停在导航栏上，才收缩
+                    if (!nav.matches(':hover')) {
+                        nav.classList.add('minimized');
+                    }
+                }, 1500);
+            }
+        };
+
+        // 1. 监听滚动事件
+        window.addEventListener('scroll', () => {
+            // 滚动时：立即展开
+            expandSidebar();
+            
+            // 停止滚动后：重新开始计时收缩
+            scheduleShrink();
+        });
+
+        // 2. 监听鼠标交互 (移入展开，移出准备收缩)
+        nav.addEventListener('mouseenter', () => {
+            clearTimeout(shrinkTimer); // 只要鼠标进去，就永远不收缩
+            expandSidebar();
+        });
+
+        nav.addEventListener('mouseleave', () => {
+            scheduleShrink(); // 鼠标离开后，重新开始倒计时
+        });
+        
+        // 初始化运行一次
+        scheduleShrink();
+    };
+    
+    // 启动该功能
+    initSidebarAutoShrink();
 });
