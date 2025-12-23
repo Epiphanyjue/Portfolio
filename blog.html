@@ -13,18 +13,17 @@
         .back-btn:hover { background: var(--p4-white); color: var(--p4-blue); transform: skew(-10deg) translate(-5px, -5px); box-shadow: 5px 5px 0 var(--p4-black); }
         .content-list { display: flex; flex-direction: column; gap: 2rem; }
         /* 蓝色主题列表项 */
-    /* 蓝色主题列表项 */
         .list-item { 
         display: block; /* [新增] */
         text-decoration: none; /* [新增] */
-        
         border: 3px solid var(--p4-blue); 
         padding: 1.5rem; 
         background: rgba(255,255,255,0.95); 
         transform: skew(-2deg); 
         transition: 0.2s; 
         cursor: pointer; 
-        color: var(--p4-blue); /* 原有的颜色设置保留即可 */
+        color: var(--p4-blue); 
+        position: relative; /* [新增] */
     }
         .list-item:hover { background: var(--p4-blue); color: white; transform: skew(-2deg) translateX(-10px); box-shadow: 10px 10px 0 rgba(0,0,0,0.5); }
         .item-date { font-family: var(--font-tech); font-weight: bold; opacity: 0.7; }
@@ -35,6 +34,9 @@
             background-image: radial-gradient(#fff 15%, transparent 16%);
             background-size: 20px 20px;
         }
+
+        /* [新增] 默认隐藏预览数据 */
+        .preview-data { display: none; }
     </style>
 </head>
 <body>
@@ -64,12 +66,44 @@
                         <span class="item-date">2024.12.01 // PHILOSOPHY</span>
                         <h2 class="item-title">如何避免玩家不舍得使用一次性道具？</h2>
                         <p>综述不同游戏在消耗品设计上的巧思...</p>
+                        
+                        <div class="preview-data">
+                            <div class="p4-monitor-header">
+                                <span>TYPE: THEORY</span>
+                                <span>DESIGN</span>
+                            </div>
+                            <div class="p4-monitor-body">
+                                <strong>> SUMMARY</strong><br>
+                                探讨经典的“圣灵药综合症”(Elixir Syndrome)：为什么玩家总是把最好的药留到通关都不用？<br>
+                                <br>
+                                <span style="color:var(--current-theme-color)">> KEY_POINTS:</span><br>
+                                - 心理学角度分析--未知恐惧<br>
+                                - RPG/FPS的道具机制对比<br>
+                                - 不同的解决方案
+                            </div>
+                        </div>
                     </a>
                     
                     <a href="https://zhuanlan.zhihu.com/p/1933488776967090690" target="_blank" class="list-item">
                         <span class="item-date">2024.11.15 // LIFE</span>
                         <h2 class="item-title">游戏系统拆解--AFK:Journey</h2>
                         <p>公式化拆解数值卡牌养成游戏。</p>
+
+                        <div class="preview-data">
+                            <div class="p4-monitor-header">
+                                <span>TYPE: ANALYSIS</span>
+                                <span>MOBILE</span>
+                            </div>
+                            <div class="p4-monitor-body">
+                                <strong>> SUMMARY</strong><br>
+                                深度拆解《剑与远征：启程》的经济循环与养成系统。<br>
+                                <br>
+                                <span style="color:var(--current-theme-color)">> KEY_POINTS:</span><br>
+                                - "共鸣等级"设计解决了什么痛点？<br>
+                                - 赛季制对长线留存的影响<br>
+                                - 大地图探索与放置玩法的融合
+                            </div>
+                        </div>
                     </a>
                 </div>
             </div>

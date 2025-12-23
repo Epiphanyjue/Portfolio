@@ -24,10 +24,14 @@
         transform: skew(-2deg); 
         transition: 0.2s; 
         cursor: pointer; 
+        position: relative; /* [新增] 为定位做准备 */
     }
         .list-item:hover { background: var(--p4-yellow); transform: skew(-2deg) translateX(-10px); box-shadow: 10px 10px 0 var(--p4-black); }
         .item-date { font-family: var(--font-tech); font-weight: bold; color: var(--p4-red); }
         .item-title { font-size: 1.5rem; font-weight: 900; margin: 0.5rem 0; }
+        
+        /* [新增] 默认隐藏预览数据 */
+        .preview-data { display: none; }
     </style>
 </head>
 <body>
@@ -57,18 +61,66 @@
                         <span class="item-date">2024.12.04 // 宣传片</span>
                         <h2 class="item-title">安全出口</h2>
                         <p>独立开发的Unreal第一人称微恐找异常...</p>
+                        
+                        <div class="preview-data">
+                            <div class="p4-monitor-header">
+                                <span>STATUS: NORMAL</span>
+                                <span>UE5 / LUMEN</span>
+                            </div>
+                            <div class="p4-monitor-body">
+                                <strong>> PROJECT_ANALYSIS</strong><br>
+                                这是一个基于“8号出口”玩法的变种实验。利用虚幻5的Lumen光照系统构建了一个无限循环的逼仄楼梯间。<br>
+                                <br>
+                                <span style="color:var(--current-theme-color)">> KEY_FEATURES:</span><br>
+                                - 心理恐怖氛围营造<br>
+                                - 动态环境异常检测<br>
+                                - 无限楼梯空间设计
+                            </div>
+                        </div>
                     </a>
                     
                     <a href="https://www.bilibili.com/video/BV1TG1MBjEcH/" target="_blank" class="list-item">
                         <span class="item-date">2024.11.20 // 宣传片</span>
                         <h2 class="item-title">Project: 传哪儿来了</h2>
                         <p>一起做了一个搜得到，拿不起，带不出的搜打撤游戏...</p>
+
+                        <div class="preview-data">
+                            <div class="p4-monitor-header">
+                                <span>STATUS: CORRUPTED</span>
+                                <span>MULTIPLAYER</span>
+                            </div>
+                            <div class="p4-monitor-body">
+                                <strong>> PROJECT_ANALYSIS</strong><br>
+                                一款极其不稳定的“塔科夫Like”多人联机游戏。核心体验在于不可预测的物理BUG和随机传送。<br>
+                                <br>
+                                <span style="color:var(--current-theme-color)">> KEY_FEATURES:</span><br>
+                                - 极度混乱的布娃娃物理<br>
+                                - 搜刮垃圾并试图撤离<br>
+                                - 既然做不完，就让BUG成为玩法
+                            </div>
+                        </div>
                     </a>
 
                     <a href="https://www.bilibili.com/video/BV1pTtRz5Ekh/" target="_blank" class="list-item">
                         <span class="item-date">2024.10.15 // 实机演示</span>
                         <h2 class="item-title">Mobius</h2>
                         <p>在四维空间下坠一年后做出的游戏...</p>
+
+                        <div class="preview-data">
+                            <div class="p4-monitor-header">
+                                <span>STATUS: 4D_SPACE</span>
+                                <span>PUZZLE</span>
+                            </div>
+                            <div class="p4-monitor-body">
+                                <strong>> PROJECT_ANALYSIS</strong><br>
+                                探索莫比乌斯环结构的平台跳跃解谜游戏。玩家需要在内外表面之间无缝切换，挑战空间认知的极限。<br>
+                                <br>
+                                <span style="color:var(--current-theme-color)">> KEY_FEATURES:</span><br>
+                                - 复杂的重力动态计算<br>
+                                - 视觉错位解谜<br>
+                                - 独特的几何美学渲染
+                            </div>
+                        </div>
                     </a>
                 </div>
             </div>

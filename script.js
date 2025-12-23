@@ -564,4 +564,88 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // 启动该功能
     initSidebarAutoShrink();
-});
+// ... (保留 document.addEventListener 之前的所有代码) ...
+
+// =========================================
+    // --- 8. [NEW] Hover 延迟预览功能 (Game/Blog) ---
+    // =========================================
+    const setupLinkHoverPreview = () => {
+        // 1. 获取所有列表项
+        const listItems = document.querySelectorAll('.content-list .list-item');
+        if (listItems.length === 0) return;
+
+        // 2. 创建或获取全局悬浮窗
+        let popup = document.querySelector('.p4-hover-popup');
+        if (!popup) {
+            popup = document.createElement('div');
+            popup.className = 'p4-hover-popup';
+            // 确保其不受页面 overflow 影响 (如果放在 body 下)
+            document.body.appendChild(popup);
+        }
+
+        let hoverTimer = null;
+
+        // 3. 辅助函数：计算并设置位置
+        const positionPopup = (item) => {
+            const rect = item.getBoundingClientRect();
+            const scrollTop = window.scrollY || document.documentElement.scrollTop;
+            
+            // 默认显示在右侧：Item 的右边缘 + 30px 间距
+            let left = rect.right + 30;
+            // 顶部对齐：Item 的顶部 + 滚动距离
+            let top = rect.top + scrollTop;
+
+            // 简单防溢出处理：如果右侧空间不足 (屏幕宽度 - left < 350)，则尝试放左边?
+            // 但考虑到 P4 风格通常较为激进，我们这里只需确保不完全出界即可
+            // 这里为了保持设计统一，优先放右侧。
+            
+            popup.style.left = `${left}px`;
+            popup.style.top = `${top}px`;
+        };
+
+        // 4. 绑定事件
+        listItems.forEach(item => {
+            const dataDiv = item.querySelector('.preview-data');
+            if (!dataDiv) return;
+
+            // --- 鼠标移入 ---
+            item.addEventListener('mouseenter', () => {
+                // 清除可能存在的旧计时器 (防止快速切换时闪烁)
+                if (hoverTimer) clearTimeout(hoverTimer);
+
+                // 开启新计时器：1000ms 后执行显示逻辑
+                hoverTimer = setTimeout(() => {
+                    // a. 填充内容
+                    popup.innerHTML = dataDiv.innerHTML;
+                    
+                    // b. 设置位置
+                    positionPopup(item);
+                    
+                    // c. 显示 (添加 active 类触发 CSS 动画)
+                    popup.classList.add('active');
+                    
+                }, 1000); // 1秒延迟
+            });
+
+            // --- 鼠标移出 ---
+            item.addEventListener('mouseleave', () => {
+                // a. 立即清除计时器 (如果还没到1秒，不仅不会显示，还会取消显示计划)
+                if (hoverTimer) clearTimeout(hoverTimer);
+                
+                // b. 隐藏悬浮窗
+                popup.classList.remove('active');
+            });
+
+            // --- 点击 (作为补充) ---
+            // 如果用户点击了，通常意味着跳转，此时也应该关闭弹窗
+            item.addEventListener('click', () => {
+                if (hoverTimer) clearTimeout(hoverTimer);
+                popup.classList.remove('active');
+            });
+        });
+    };
+    
+    // 执行功能
+    setupLinkHoverPreview();
+
+}); // End of DOMContentLoaded
