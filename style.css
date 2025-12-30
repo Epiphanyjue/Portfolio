@@ -1651,3 +1651,87 @@ a.nav-brand:hover {
     border-right: 18px solid var(--current-theme-color); 
     filter: drop-shadow(-2px 2px 0 rgba(0,0,0,0.5));
 }
+/* =========================================
+   [NEW] 屏幕尺寸检测与警告遮罩 (Resolution Warning)
+   ========================================= */
+#resolution-warning {
+    /* 默认隐藏 */
+    display: none; 
+    
+    /* 强制全屏覆盖 */
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    z-index: 99999; /* 确保层级最高，遮挡所有内容 */
+    
+    /* P4 风格背景：黑色+深灰斜纹 */
+    background-color: var(--p4-black);
+    background-image: repeating-linear-gradient(
+        45deg,
+        var(--p4-black),
+        var(--p4-black) 20px,
+        #1a1a1a 20px,
+        #1a1a1a 40px
+    );
+    
+    /* 弹性布局居中内容 */
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 2rem;
+    cursor: not-allowed;
+}
+
+/* 警告标题 */
+#resolution-warning h1 {
+    font-family: var(--font-tech);
+    font-size: 3rem;
+    color: var(--p4-red);
+    margin-bottom: 1.5rem;
+    text-transform: uppercase;
+    text-shadow: 4px 4px 0 var(--p4-white);
+    
+    /* 复用现有的故障动画 */
+    animation: p4-rgb-glitch 2s infinite ease-in-out;
+}
+
+/* 警告说明文字 */
+#resolution-warning p {
+    font-family: var(--font-main);
+    font-size: 1.2rem;
+    color: var(--p4-yellow);
+    font-weight: bold;
+    max-width: 600px;
+    line-height: 1.6;
+    background: var(--p4-black);
+    padding: 10px;
+    border: 2px solid var(--p4-white);
+    transform: skewX(-10deg);
+}
+
+/* 装饰线条 */
+.warning-line {
+    width: 100%;
+    height: 50px;
+    background: repeating-linear-gradient(
+        90deg, 
+        var(--p4-yellow), 
+        var(--p4-yellow) 10px, 
+        var(--p4-black) 10px, 
+        var(--p4-black) 20px
+    );
+    margin: 2rem 0;
+    opacity: 0.8;
+}
+
+/* --- [关键] 媒体查询触发器 --- */
+/* 当屏幕宽度小于 900px 时显示警告 (可根据需求调整数值) */
+@media screen and (max-width: 900px) {
+    #resolution-warning {
+        display: flex !important;
+    }
+    
+    /* 强制禁止底部页面滚动 */
+    body {
+        overflow: hidden !important;
+    }
+}

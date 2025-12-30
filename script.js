@@ -1,5 +1,52 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // =========================================
+    // --- [NEW] Intro Animation Controller ---
+    // =========================================
+    // =========================================
+    // --- [NEW] P4 Hardcore Landing Controller ---
+    // =========================================
+    const playIntroAnimation = () => {
+        const landing = document.getElementById('p4-landing-sequence');
+        if (!landing) return;
+
+        // 如果想每次都看动画调试，请注释下面三行
+        // if (sessionStorage.getItem('p4_intro_played')) {
+        //     landing.style.display = 'none';
+        //     return;
+        // }
+
+        document.body.style.overflow = 'hidden';
+
+        // 动画序列编排 (Timeline)
+        // 0ms: 初始状态 (Loading 弹跳中)
+        
+        // 500ms: 电影黑边出现
+        setTimeout(() => {
+            landing.classList.add('stage-1');
+        }, 500);
+
+        // 2000ms: 黄色切片升起，遮住 Loading
+        setTimeout(() => {
+            landing.classList.add('stage-2');
+        }, 2200);
+
+        // 2800ms: 切换到底层网页，切片落下 (Reveal)
+        setTimeout(() => {
+            landing.classList.add('stage-3');
+            document.body.style.overflow = ''; // 恢复滚动
+            sessionStorage.setItem('p4_intro_played', 'true');
+        }, 2800);
+
+        // 3500ms: 清理 DOM
+        setTimeout(() => {
+            landing.classList.add('hidden');
+        }, 3500);
+    };
     
+    // 确保在 CSS 加载完后执行
+    window.addEventListener('load', playIntroAnimation);
+
+
 // =========================================
     // --- 0. 全局变量与工具 ---
     // =========================================
