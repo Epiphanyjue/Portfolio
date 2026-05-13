@@ -1,5 +1,81 @@
 document.addEventListener('DOMContentLoaded', () => {
     // =========================================
+    // --- Homepage Entry Gate + BGM Consent ---
+    // =========================================
+    const setupSiteEntryGate = () => {
+        const gate = document.getElementById('site-entry-gate');
+        const enterBtn = document.getElementById('entry-confirm-btn');
+        const statusText = document.getElementById('entry-status');
+        const progressBar = document.getElementById('entry-progress-bar');
+        const progressText = document.getElementById('entry-progress-text');
+        const isHomePage = Boolean(document.getElementById('landing'));
+
+        if (!gate || !enterBtn || !isHomePage) return;
+
+        const gateSeenKey = 'y2kee_entry_gate_confirmed';
+        const hasConfirmed = sessionStorage.getItem(gateSeenKey) === 'true';
+
+        const releaseGate = () => {
+            gate.classList.add('is-leaving');
+            document.body.classList.remove('entry-locked');
+            sessionStorage.setItem(gateSeenKey, 'true');
+
+            setTimeout(() => {
+                gate.classList.add('is-hidden');
+            }, 650);
+        };
+
+        if (hasConfirmed) {
+            gate.classList.add('is-hidden');
+            return;
+        }
+
+        document.body.classList.add('entry-locked');
+        enterBtn.disabled = true;
+        gate.style.setProperty('--entry-progress', '0%');
+
+        let progress = 0;
+        const loadingTimer = setInterval(() => {
+            const increment = progress < 70 ? 8 : 4;
+            progress = Math.min(progress + increment, 100);
+
+            gate.style.setProperty('--entry-progress', `${progress}%`);
+            if (progressBar) progressBar.style.width = `${progress}%`;
+            if (progressText) progressText.textContent = `${progress}%`;
+
+            if (progress >= 100) {
+                clearInterval(loadingTimer);
+                gate.classList.remove('is-loading');
+                gate.classList.add('is-ready');
+                enterBtn.disabled = false;
+                if (statusText) statusText.textContent = 'SIGNAL READY';
+            }
+        }, 90);
+
+        const homeAudio = new Audio('music/start.mp3');
+        homeAudio.volume = 0.45;
+        homeAudio.loop = true;
+
+        enterBtn.addEventListener('click', async () => {
+            enterBtn.disabled = true;
+            enterBtn.classList.add('is-booting');
+            if (statusText) statusText.textContent = 'BOOTING AUDIO...';
+
+            try {
+                await homeAudio.play();
+                if (statusText) statusText.textContent = 'AUDIO ONLINE';
+            } catch (error) {
+                console.warn('主页背景音乐播放失败，仍继续进入页面:', error);
+                if (statusText) statusText.textContent = 'AUDIO BLOCKED / ENTERING';
+            }
+
+            setTimeout(releaseGate, 280);
+        });
+    };
+
+    setupSiteEntryGate();
+
+    // =========================================
     // --- [NEW] Intro Animation Controller ---
     // =========================================
     // =========================================

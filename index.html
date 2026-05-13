@@ -3,12 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>P4 PORTFOLIO // THE MIDNIGHT CHANNEL</title>
+    <title>Y2KEEの世界</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;700;900&family=Noto+Sans+SC:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div id="site-entry-gate" class="site-entry-gate is-loading" aria-modal="true" role="dialog" aria-labelledby="entry-title">
+        <div class="entry-loader" aria-hidden="true">
+            <div class="entry-loader-label">TUNING CHANNEL</div>
+            <div class="entry-loader-track">
+                <div id="entry-progress-bar" class="entry-loader-bar"></div>
+            </div>
+            <div id="entry-progress-text" class="entry-loader-percent">0%</div>
+        </div>
+
+        <main class="entry-stage">
+            <section class="entry-copy-zone">
+                <div class="entry-kicker">MIDNIGHT CHANNEL</div>
+                <h1 id="entry-title" class="entry-title" data-text="Y2KEE">Y2KEE</h1>
+
+                <button id="entry-confirm-btn" class="entry-confirm-btn" type="button" disabled>
+                    <span>ENTER CHANNEL</span>
+                    <small>START AUDIO</small>
+                </button>
+
+                <div id="entry-status" class="entry-status" aria-live="polite">LOADING SIGNAL</div>
+            </section>
+
+            <section class="entry-signal-card" aria-hidden="true">
+                <div class="entry-screen">
+                    <div class="entry-screen-noise"></div>
+                    <div class="entry-screen-title">Y2KEE</div>
+                </div>
+            </section>
+        </main>
+    </div>
+
     <div id="resolution-warning">
         <div class="warning-line"></div>
         <h1>⚠ ACCESS DENIED ⚠</h1>
@@ -123,7 +154,9 @@
                     <div class="glass-right"></div>
                 </div>
 
-                <div class="logo-box">LOGO</div>
+                <div class="logo-box">
+                    <img src="image/icon.jpg" alt="Y2KEE profile illustration">
+                </div>
                 <div class="intro-content">
                     <div class="intro-header">HELLO, WORLD.</div>
                     <p>我是 <strong>[Y2KEE]</strong>。一名游走于代码与视觉之间的设计师。</p>
@@ -149,6 +182,19 @@
             <div class="film-strip-wrapper">
                 <div class="film-strip-container">
                     <div class="film-track">
+                        <a href="https://www.bilibili.com/video/BV1P1wjzyEKs/" class="work-card" target="_blank">
+                            <div class="work-img">
+                                <img src="image/total.jpg"
+                                    data-gif="你的动态GIF路径.gif"
+                                    alt="项目名称">
+                            </div>
+                            <div class="work-info">
+                                <h4>作品总览</h4>
+                                <small>作品集 / 实机整合</small>
+                            </div>
+                        </a>
+
+
                         <a href="https://www.bilibili.com/video/BV1TG1MBjEcH/" class="work-card" target="_blank">
                             <div class="work-img">
                                 <img src="image/where.jpg" 
@@ -160,6 +206,8 @@
                                 <small>独立游戏 / 游戏PV</small>
                             </div>
                         </a>
+
+
                         <a href="https://www.bilibili.com/video/BV1v7SeBkExi/" class="work-card" target="_blank">
                             <div class="work-img">
                                 <img src="image/emergency.png" 
@@ -193,6 +241,18 @@
                                 <small>独立游戏 / 游戏PV</small>
                             </div>
                         </a>
+                        <a href="https://www.bilibili.com/video/BV1pk8YzZEfR/" class="work-card" target="_blank">
+                            <div class="work-img">
+                                <img src="image/naughtykid.jpg"
+                                    data-gif="你的动态GIF路径.gif"
+                                    alt="项目名称">
+                            </div>
+                            <div class="work-info">
+                                <h4>皮小孩</h4>
+                                <small>独立游戏 / 游戏实机</small>
+                            </div>
+                        </a>
+
                         <a href="https://www.bilibili.com/video/BV1pjUNY7ENs/" class="work-card" target="_blank">
                             <div class="work-img">
                                 <img src="image/interior.jpg" 
@@ -288,7 +348,7 @@
             <div class="contact-content-grid">
                 <div class="contact-item">
                     <span class="label">EMAIL //</span>
-                    <a href="mailto:yourname@example.com" class="value">yourname@example.com</a>
+                    <a href="mailto:1135474613epiphany@gmail.com" class="value">1135474613epiphany@gmail.com</a>
                 </div>
                 <div class="contact-item">
                     <span class="label">SOCIAL //</span>
