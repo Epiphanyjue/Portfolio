@@ -52,7 +52,9 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }, 90);
 
-        const homeAudio = new Audio('music/start.mp3');
+        const homeAudio = new Audio();
+        homeAudio.preload = 'none';
+        homeAudio.src = 'music/start.mp3';
         homeAudio.volume = 0.45;
         homeAudio.loop = true;
 
@@ -61,15 +63,17 @@ document.addEventListener('DOMContentLoaded', () => {
             enterBtn.classList.add('is-booting');
             if (statusText) statusText.textContent = 'BOOTING AUDIO...';
 
+            // 页面进入不应被音频下载速度阻塞。
+            const playPromise = homeAudio.play();
+            setTimeout(releaseGate, 280);
+
             try {
-                await homeAudio.play();
+                await playPromise;
                 if (statusText) statusText.textContent = 'AUDIO ONLINE';
             } catch (error) {
                 console.warn('主页背景音乐播放失败，仍继续进入页面:', error);
                 if (statusText) statusText.textContent = 'AUDIO BLOCKED / ENTERING';
             }
-
-            setTimeout(releaseGate, 280);
         });
     };
 
@@ -188,37 +192,40 @@ document.addEventListener('DOMContentLoaded', () => {
         //    return; 
         // }
 
-            if (titleBtn && musicFile) {
-                        const audio = new Audio(musicFile);
-                        
-                        // [新增]在这里添加这行代码控制音量
-                        audio.volume = 0.5; // 同样建议设置小一点
-                        
-                        audio.loop = true;
-                        let isPlaying = false;
+        if (titleBtn && musicFile) {
+            const audio = new Audio();
+            audio.preload = 'none';
+            audio.src = musicFile;
+            audio.volume = 0.5;
+            audio.loop = true;
+            let isPlaying = false;
+            let playPending = false;
 
-            titleBtn.addEventListener('click', () => {
+            titleBtn.addEventListener('click', async () => {
+                if (playPending) return;
+
                 if (isPlaying) {
-                    // 暂停逻辑
                     audio.pause();
-                    titleBtn.classList.remove('playing'); 
-                    // [新增] 移除条形码的波形动画类
+                    isPlaying = false;
+                    titleBtn.classList.remove('playing');
                     if (barcodeDeco) barcodeDeco.classList.remove('playing');
-                } else {
-                    // 播放逻辑
-                    const playPromise = audio.play();
-                    if (playPromise !== undefined) {
-                        playPromise.then(() => {
-                            titleBtn.classList.add('playing');
-                            // [新增] 添加条形码的波形动画类
-                            if (barcodeDeco) barcodeDeco.classList.add('playing');
-                        }).catch(error => {
-                            console.error("播放失败:", error);
-                            // alert("播放失败..."); // 可以注释掉 alert 避免打扰
-                        });
-                    }
+                    return;
                 }
-                isPlaying = !isPlaying;
+
+                playPending = true;
+                try {
+                    await audio.play();
+                    isPlaying = true;
+                    titleBtn.classList.add('playing');
+                    if (barcodeDeco) barcodeDeco.classList.add('playing');
+                } catch (error) {
+                    isPlaying = false;
+                    titleBtn.classList.remove('playing');
+                    if (barcodeDeco) barcodeDeco.classList.remove('playing');
+                    console.error('播放失败:', error);
+                } finally {
+                    playPending = false;
+                }
             });
         }
     };
@@ -236,11 +243,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (!lightbox || !lightboxImg) return;
 
+        let clearSourceTimer = null;
+
         // 1. 打开灯箱
         artCards.forEach(card => {
             card.addEventListener('click', () => {
                 const img = card.querySelector('img');
                 if (img) {
+                    if (clearSourceTimer) clearTimeout(clearSourceTimer);
                     // 优先读取 data-gif 属性，如果没有则使用 src
                     const targetSrc = img.getAttribute('data-gif') || img.src;
                     
@@ -254,8 +264,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const closeLightbox = () => {
             lightbox.classList.remove('active');
             // 延迟清空 src，防止动画过程中图片消失
-            setTimeout(() => {
-                lightboxImg.src = ''; 
+            clearSourceTimer = setTimeout(() => {
+                lightboxImg.src = '';
             }, 300);
         };
 
@@ -438,6 +448,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const navLinks = document.querySelectorAll('.nav-links a[href^="#"]'); 
     
     window.addEventListener('scroll', () => {
+        if (!navBar) return;
+
         const scrollY = window.scrollY;
         
         // 侧边栏模式切换
@@ -461,6 +473,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // 锚点平滑滚动
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
+            // START GAME 使用自己的延迟动画与滚动流程，避免一次点击触发两次滚动。
+            if (this.id === 'start-game-btn') return;
+
             e.preventDefault();
             const id = this.getAttribute('href');
             if(id === '#') return;
@@ -511,12 +526,18 @@ document.addEventListener('DOMContentLoaded', () => {
     // 打开弹窗的通用函数
     const openContact = (e) => {
         if(e) e.preventDefault();
-        if(contactOverlay) contactOverlay.classList.add('active');
+        if(contactOverlay) {
+            contactOverlay.classList.add('active');
+            document.body.classList.add('contact-open');
+        }
     };
 
     // 关闭弹窗的通用函数
     const closeContact = () => {
-        if(contactOverlay) contactOverlay.classList.remove('active');
+        if(contactOverlay) {
+            contactOverlay.classList.remove('active');
+            document.body.classList.remove('contact-open');
+        }
     };
     
     if (contactOverlay) {
@@ -538,6 +559,12 @@ document.addEventListener('DOMContentLoaded', () => {
         // 4. 点击遮罩背景关闭
         contactOverlay.addEventListener('click', (e) => {
             if (e.target === contactOverlay || e.target.classList.contains('overlay-bg')) {
+                closeContact();
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && contactOverlay.classList.contains('active')) {
                 closeContact();
             }
         });
@@ -611,17 +638,16 @@ document.addEventListener('DOMContentLoaded', () => {
     // =========================================
     const startGameBtn = document.getElementById('start-game-btn');
     if (startGameBtn) {
-        startGameBtn.addEventListener('click', (e) => {
-            e.preventDefault(); 
-            
-            // [新增功能] 1. 播放开始音效/音乐
-            // 请确保你的 music 文件夹下有 start.mp3 文件
-            const startAudio = new Audio('music/start.mp3');
-            // 如果你希望音量小一点，可以解开下面这行的注释并调整数值(0.0 - 1.0)
-            startAudio.volume = 0.5; 
-            startAudio.play().catch(error => console.log("播放失败，请检查浏览器自动播放策略或文件路径:", error));
+        let isStarting = false;
 
-            // [原有逻辑] 2. 添加点击后的剧烈收缩类 (需配合 CSS)
+        startGameBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (isStarting) return;
+
+            isStarting = true;
+            startGameBtn.setAttribute('aria-busy', 'true');
+
+            // 背景音乐已由进入网站时创建的唯一实例负责，这里只处理按钮动画和滚动。
             startGameBtn.classList.add('clicked-anim');
 
             // [原有逻辑] 3. 模拟 "系统启动" 延迟
@@ -634,8 +660,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 if(profileSec) {
                     profileSec.scrollIntoView({ behavior: 'smooth' });
                 }
-                // 动画结束后移除类
-                setTimeout(() => startGameBtn.classList.remove('clicked-anim'), 500);
+                // 动画结束后恢复按钮，避免快速连点创建重复任务。
+                setTimeout(() => {
+                    startGameBtn.classList.remove('clicked-anim');
+                    startGameBtn.removeAttribute('aria-busy');
+                    isStarting = false;
+                }, 500);
             }, 500); // 稍微延长到 500ms 让动画播完
         });
     }
@@ -728,14 +758,24 @@ document.addEventListener('DOMContentLoaded', () => {
             const rect = item.getBoundingClientRect();
             const scrollTop = window.scrollY || document.documentElement.scrollTop;
             
-            // 默认显示在右侧：Item 的右边缘 + 30px 间距
-            let left = rect.right + 30;
-            // 顶部对齐：Item 的顶部 + 滚动距离
-            let top = rect.top + scrollTop;
+            const gap = 24;
+            // 预留斜切动画产生的额外视觉宽度，不能只按盒模型边界计算。
+            const viewportPadding = 56;
+            const popupWidth = popup.offsetWidth || 320;
+            const popupHeight = popup.offsetHeight || 260;
 
-            // 简单防溢出处理：如果右侧空间不足 (屏幕宽度 - left < 350)，则尝试放左边?
-            // 但考虑到 P4 风格通常较为激进，我们这里只需确保不完全出界即可
-            // 这里为了保持设计统一，优先放右侧。
+            // 优先放在卡片右侧；空间不足时自动切换到左侧。
+            let left = rect.right + gap;
+            if (left + popupWidth > window.innerWidth - viewportPadding) {
+                left = rect.left - popupWidth - gap;
+            }
+            left = Math.max(viewportPadding, Math.min(left, window.innerWidth - popupWidth - viewportPadding));
+
+            // 将预览限制在当前可视区域内，避免页面顶部或底部被截断。
+            let top = rect.top + scrollTop;
+            const minTop = scrollTop + viewportPadding;
+            const maxTop = scrollTop + window.innerHeight - popupHeight - viewportPadding;
+            top = Math.max(minTop, Math.min(top, Math.max(minTop, maxTop)));
             
             popup.style.left = `${left}px`;
             popup.style.top = `${top}px`;
