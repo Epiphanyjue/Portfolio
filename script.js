@@ -551,8 +551,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnRight = document.getElementById('scrollRight');
     
     if (scrollContainer && btnLeft && btnRight) {
-        // 精确计算每次滚动的距离：卡片宽度(380) + 间距(40) = 420px
-        const scrollAmount = 420; 
+        // 桌面端与移动端卡片宽度不同，按当前实际尺寸计算滚动距离。
+        const getScrollAmount = () => {
+            const firstCard = scrollContainer.querySelector('.work-card');
+            const track = scrollContainer.querySelector('.film-track');
+            if (!firstCard || !track) return scrollContainer.clientWidth;
+
+            const trackStyle = window.getComputedStyle(track);
+            const gap = parseFloat(trackStyle.columnGap || trackStyle.gap) || 0;
+            return firstCard.getBoundingClientRect().width + gap;
+        };
 
         // --- [新增] 更新按钮状态的函数 ---
         const updateButtonState = () => {
@@ -579,11 +587,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // 点击事件
         btnLeft.addEventListener('click', () => {
-            scrollContainer.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+            scrollContainer.scrollBy({ left: -getScrollAmount(), behavior: 'smooth' });
         });
 
         btnRight.addEventListener('click', () => {
-            scrollContainer.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+            scrollContainer.scrollBy({ left: getScrollAmount(), behavior: 'smooth' });
         });
 
         // --- [关键] 监听滚动事件 ---
@@ -637,6 +645,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const initSidebarAutoShrink = () => {
         let shrinkTimer;
         const nav = document.querySelector('.p4-top-nav');
+        const mobileOrTouch = window.matchMedia('(max-width: 900px), (hover: none), (pointer: coarse)');
+
+        // 移动端导航始终保持为顶部栏，不运行依赖 hover 的侧栏收缩。
+        if (!nav || mobileOrTouch.matches) return;
 
         // 核心函数：恢复展开
         const expandSidebar = () => {
@@ -693,6 +705,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- 8. [NEW] Hover 延迟预览功能 (Game/Blog) ---
     // =========================================
     const setupLinkHoverPreview = () => {
+        // 触控设备直接点击卡片进入内容，不创建悬浮预览层。
+        if (window.matchMedia('(hover: none), (pointer: coarse), (max-width: 900px)').matches) return;
+
         // 1. 获取所有列表项
         const listItems = document.querySelectorAll('.content-list .list-item');
         if (listItems.length === 0) return;
