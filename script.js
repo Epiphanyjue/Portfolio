@@ -15,6 +15,43 @@ document.addEventListener('DOMContentLoaded', () => {
         const gateSeenKey = 'y2kee_entry_gate_confirmed';
         const hasConfirmed = sessionStorage.getItem(gateSeenKey) === 'true';
 
+        const homeAudio = new Audio();
+        homeAudio.preload = 'none';
+        homeAudio.src = 'music/start.mp3';
+        homeAudio.volume = 0.24;
+        homeAudio.loop = true;
+
+        const weatherButton = document.getElementById('mobile-weather-button');
+        const weatherIcon = document.getElementById('mobile-weather-icon');
+        const muteButton = document.getElementById('mobile-mute-button');
+        const muteIcon = document.getElementById('mobile-mute-icon');
+        const weatherStates = [
+            { icon: '☀', label: '晴朗' },
+            { icon: '☁', label: '多云' },
+            { icon: '☂', label: '有雨' },
+            { icon: '✦', label: '夜间' }
+        ];
+        const weatherState = weatherStates[Math.floor(Math.random() * weatherStates.length)];
+
+        if (weatherIcon) weatherIcon.textContent = weatherState.icon;
+        if (weatherButton) weatherButton.setAttribute('aria-label', `今日天气装饰：${weatherState.label}`);
+
+        const syncMuteButton = () => {
+            if (!muteButton || !muteIcon) return;
+            muteButton.classList.toggle('is-muted', homeAudio.muted);
+            muteButton.setAttribute('aria-pressed', String(homeAudio.muted));
+            muteButton.setAttribute('aria-label', homeAudio.muted ? '取消静音背景音乐' : '静音背景音乐');
+            muteIcon.textContent = homeAudio.muted ? '×' : '♪';
+        };
+
+        if (muteButton) {
+            muteButton.addEventListener('click', () => {
+                homeAudio.muted = !homeAudio.muted;
+                syncMuteButton();
+            });
+            syncMuteButton();
+        }
+
         const releaseGate = () => {
             gate.classList.add('is-leaving');
             document.body.classList.remove('entry-locked');
@@ -51,12 +88,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (statusText) statusText.textContent = 'SIGNAL READY';
             }
         }, 90);
-
-        const homeAudio = new Audio();
-        homeAudio.preload = 'none';
-        homeAudio.src = 'music/start.mp3';
-        homeAudio.volume = 0.45;
-        homeAudio.loop = true;
 
         enterBtn.addEventListener('click', async () => {
             enterBtn.disabled = true;
@@ -196,7 +227,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const audio = new Audio();
             audio.preload = 'none';
             audio.src = musicFile;
-            audio.volume = 0.5;
+            audio.volume = 0.35;
             audio.loop = true;
             let isPlaying = false;
             let playPending = false;
@@ -480,7 +511,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const id = this.getAttribute('href');
             if(id === '#') return;
             const target = document.querySelector(id);
-            if (target) target.scrollIntoView({ behavior: 'smooth' });
+            if (target) {
+                if (this.closest('.mobile-portfolio')) {
+                    window.history.pushState(null, '', id);
+                    const targetTop = target.getBoundingClientRect().top + window.scrollY;
+                    window.scrollTo({ top: Math.max(0, targetTop), behavior: 'smooth' });
+                    return;
+                }
+                target.scrollIntoView({ behavior: 'smooth' });
+            }
         });
     });
 
@@ -522,6 +561,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeContactBtn = document.getElementById('close-contact');
     const navContactBtn = document.getElementById('contact-trigger'); // 顶部/侧边栏按钮
     const footerContactBtn = document.getElementById('footer-contact-trigger'); // [NEW] 底部大文字按钮
+    const mobileContactBtns = document.querySelectorAll('#mobile-contact-trigger, #mobile-footer-contact-trigger');
     
     // 打开弹窗的通用函数
     const openContact = (e) => {
@@ -551,6 +591,10 @@ document.addEventListener('DOMContentLoaded', () => {
             footerContactBtn.addEventListener('click', openContact);
         }
 
+        mobileContactBtns.forEach((button) => {
+            button.addEventListener('click', openContact);
+        });
+
         // 3. 点击关闭按钮
         if (closeContactBtn) {
             closeContactBtn.addEventListener('click', closeContact);
@@ -569,6 +613,111 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    // =========================================
+    // --- Mobile reveal and background motion ---
+    // =========================================
+    const setupMobileMotion = () => {
+        const mobilePortfolio = document.querySelector('.mobile-portfolio');
+        if (!mobilePortfolio) return;
+
+        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const revealTargets = [...mobilePortfolio.querySelectorAll([
+            '.mobile-category-link',
+            '.mobile-section-heading',
+            '.mobile-project-card',
+            '.mobile-about-card',
+            '.mobile-channel-card',
+            '.mobile-contact-card'
+        ].join(','))];
+
+        revealTargets.forEach((target, index) => {
+            target.classList.add('mobile-reveal-target');
+            target.style.setProperty('--mobile-reveal-delay', `${Math.min(index % 3, 2) * 28}ms`);
+        });
+
+        if (reduceMotion || !('IntersectionObserver' in window)) {
+            revealTargets.forEach((target) => target.classList.add('is-visible'));
+        } else {
+            const revealObserver = new IntersectionObserver((entries, observerInstance) => {
+                entries.forEach((entry) => {
+                    if (!entry.isIntersecting) return;
+                    entry.target.classList.add('is-visible');
+                    observerInstance.unobserve(entry.target);
+                });
+            }, {
+                threshold: 0.06,
+                rootMargin: '0px 0px 8% 0px'
+            });
+
+            revealTargets.forEach((target) => revealObserver.observe(target));
+        }
+
+        let motionFrame = 0;
+        const updateBackgroundMotion = () => {
+            const shift = Math.min(window.scrollY, 2400);
+            mobilePortfolio.style.setProperty('--mobile-scroll-shift', `${shift}px`);
+            motionFrame = 0;
+        };
+
+        window.addEventListener('scroll', () => {
+            if (motionFrame || reduceMotion) return;
+            motionFrame = window.requestAnimationFrame(updateBackgroundMotion);
+        }, { passive: true });
+
+        updateBackgroundMotion();
+    };
+
+    setupMobileMotion();
+
+    // =========================================
+    // --- Mobile project rail controls ---
+    // =========================================
+    const setupMobileProjectCarousel = () => {
+        const carousel = document.querySelector('.mobile-project-carousel');
+        const track = document.querySelector('.mobile-project-track');
+        const counter = document.getElementById('mobile-project-counter');
+        const previousButton = document.getElementById('mobile-project-prev');
+        const nextButton = document.getElementById('mobile-project-next');
+        const control = document.querySelector('.mobile-carousel-control');
+        if (!carousel || !track || !counter || !previousButton || !nextButton || !control) return;
+
+        const cards = [...track.querySelectorAll('.mobile-project-entry')];
+        if (!cards.length) return;
+
+        const getStep = () => {
+            const card = cards[0];
+            const gap = parseFloat(window.getComputedStyle(track).gap) || 0;
+            return card.getBoundingClientRect().width + gap;
+        };
+
+        const updateCarouselState = () => {
+            const step = getStep();
+            const index = Math.max(0, Math.min(cards.length - 1, Math.round(carousel.scrollLeft / step)));
+            const maxScrollLeft = Math.max(0, carousel.scrollWidth - carousel.clientWidth);
+
+            counter.textContent = `${String(index + 1).padStart(2, '0')} / ${String(cards.length).padStart(2, '0')}`;
+            control.style.setProperty('--mobile-carousel-index', String(index));
+            previousButton.classList.toggle('is-disabled', index === 0);
+            nextButton.classList.toggle('is-disabled', carousel.scrollLeft >= maxScrollLeft - 2 || index === cards.length - 1);
+            previousButton.disabled = index === 0;
+            nextButton.disabled = carousel.scrollLeft >= maxScrollLeft - 2 || index === cards.length - 1;
+        };
+
+        previousButton.addEventListener('click', () => {
+            carousel.scrollBy({ left: -getStep(), behavior: 'smooth' });
+        });
+
+        nextButton.addEventListener('click', () => {
+            carousel.scrollBy({ left: getStep(), behavior: 'smooth' });
+        });
+
+        carousel.addEventListener('scroll', () => window.requestAnimationFrame(updateCarouselState), { passive: true });
+        window.addEventListener('resize', updateCarouselState);
+        updateCarouselState();
+    };
+
+    setupMobileProjectCarousel();
 
     // =========================================
     // --- 5. [UPDATED] Highlights 左右精确切换逻辑 (带禁用状态) ---
@@ -827,3 +976,4 @@ document.addEventListener('DOMContentLoaded', () => {
     setupLinkHoverPreview();
 
 }); // End of DOMContentLoaded
+
