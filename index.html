@@ -6,9 +6,10 @@
     <title>Y2KEEの世界</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;700;900&family=Noto+Sans+SC:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="icon" href="data:,">
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="home-page">
     <div id="site-entry-gate" class="site-entry-gate is-loading" aria-modal="true" role="dialog" aria-labelledby="entry-title">
         <div class="entry-loader" aria-hidden="true">
             <div class="entry-loader-label">TUNING CHANNEL</div>
@@ -77,6 +78,185 @@
             </a>
         </div>
     </nav>
+
+    <main class="mobile-portfolio" aria-label="阮城城移动端作品集">
+        <header class="mobile-quick-bar">
+            <a href="#mobile-top" class="mobile-quick-brand" aria-label="返回首页">CHANNEL</a>
+            <nav class="mobile-quick-links" aria-label="移动端快速跳转">
+                <a href="#mobile-overview"><span>WORK</span><small>01</small></a>
+                <a href="#mobile-about"><span>ABOUT</span><small>02</small></a>
+                <a href="#mobile-more"><span>MORE</span><small>03</small></a>
+            </nav>
+            <div class="mobile-quick-tools">
+                <button id="mobile-weather-button" class="mobile-tool-button is-weather" type="button" aria-label="今日天气装饰">
+                    <span id="mobile-weather-icon" aria-hidden="true">☀</span>
+                </button>
+                <button id="mobile-mute-button" class="mobile-tool-button is-audio" type="button" aria-label="静音背景音乐" aria-pressed="false">
+                    <span id="mobile-mute-icon" aria-hidden="true">♪</span>
+                </button>
+            </div>
+        </header>
+
+        <section id="mobile-top" class="mobile-hero-section mobile-snap-section">
+            <div class="mobile-hero-copy">
+                <span class="mobile-kicker">GAME / CODE / ART</span>
+                <div class="mobile-name-stage">
+                    <h1 class="mobile-name-base">RUAN <span>CHENGCHENG</span></h1>
+                    <h1 class="mobile-name-layer is-red" aria-hidden="true">RUAN <span>CHENGCHENG</span></h1>
+                    <h1 class="mobile-name-layer is-white" aria-hidden="true">RUAN <span>CHENGCHENG</span></h1>
+                    <i class="mobile-name-scan-edge" aria-hidden="true"></i>
+                </div>
+                <span class="mobile-hero-index">PORTFOLIO / 2026</span>
+            </div>
+
+            <nav class="mobile-category-hub" aria-label="移动端内容分类">
+                <div class="mobile-category-heading">
+                    <strong>NAVIGATION / 03</strong>
+                    <span>QUICK ACCESS</span>
+                </div>
+                <a href="#mobile-overview" class="mobile-category-link is-work">
+                    <span class="mobile-category-number">01</span>
+                    <span class="mobile-category-copy"><small>SELECTED WORKS</small><strong>作品</strong></span>
+                    <span class="mobile-category-arrow">↘</span>
+                </a>
+                <a href="#mobile-about" class="mobile-category-link is-about">
+                    <span class="mobile-category-number">02</span>
+                    <span class="mobile-category-copy"><small>PROFILE / APPROACH</small><strong>个人介绍</strong></span>
+                    <span class="mobile-category-arrow">↘</span>
+                </a>
+                <a href="#mobile-more" class="mobile-category-link is-more">
+                    <span class="mobile-category-number">03</span>
+                    <span class="mobile-category-copy"><small>GAME / BLOG / ART</small><strong>探索更多</strong></span>
+                    <span class="mobile-category-arrow">↘</span>
+                </a>
+            </nav>
+        </section>
+
+        <section id="mobile-overview" class="mobile-work-section mobile-snap-section">
+            <div class="mobile-section-heading">
+                <span>PRIORITY / SHOWREEL</span>
+                <h2>OVERVIEW + WORK</h2>
+            </div>
+
+            <a href="https://www.bilibili.com/video/BV1P1wjzyEKs/" target="_blank" rel="noopener" class="mobile-project-card mobile-showreel-card">
+                <span class="mobile-project-media">
+                    <img src="image/total.jpg" alt="作品总览视频封面">
+                    <span class="mobile-card-play" aria-hidden="true">▶</span>
+                    <span class="mobile-media-label">BEST VIDEO / WATCH NOW</span>
+                </span>
+                <span class="mobile-project-copy">
+                    <small>SELECTED WORKS / REAL-TIME FOOTAGE</small>
+                    <strong>作品总览</strong>
+                    <span class="mobile-card-arrow">↗</span>
+                </span>
+            </a>
+        </section>
+
+        <section id="mobile-work" class="mobile-projects-section mobile-snap-section">
+            <div class="mobile-section-heading is-light">
+                <span>SELECTED / 01—03</span>
+                <h2>PROJECT ARCHIVE</h2>
+            </div>
+
+            <div class="mobile-project-carousel" aria-label="项目横向滑动展示">
+                <div class="mobile-project-track">
+                    <article id="mobile-project-safety" class="mobile-project-entry mobile-card-snap">
+                        <a href="https://www.bilibili.com/video/BV1P1wjzyEKs?t=102.1" target="_blank" rel="noopener" class="mobile-project-card">
+                            <span class="mobile-project-media">
+                                <img src="image/emergency.png" loading="lazy" alt="《安全出口》实机画面">
+                                <span class="mobile-project-number">01</span>
+                            </span>
+                            <span class="mobile-project-copy">
+                                <small>HORROR PUZZLE / DESIGN + PROGRAMMING</small>
+                                <strong>《安全出口》</strong>
+                                <span>结合热门找异常玩法与 P.T 场景设计理念，通过场景叙事、关卡引导与怪物追逐战构建恐怖体验。</span>
+                                <span class="mobile-card-arrow">↗</span>
+                            </span>
+                        </a>
+                    </article>
+
+                    <article id="mobile-project-where" class="mobile-project-entry mobile-card-snap">
+                        <a href="https://www.bilibili.com/video/BV1TG1MBjEcH/" target="_blank" rel="noopener" class="mobile-project-card">
+                            <span class="mobile-project-media">
+                                <img src="image/where.jpg" loading="lazy" alt="《传哪儿来了》实机画面">
+                                <span class="mobile-project-number">02</span>
+                            </span>
+                            <span class="mobile-project-copy">
+                                <small>FIRST-PERSON PVE / LEAD DESIGN</small>
+                                <strong>《传哪儿来了》</strong>
+                                <span>通过传送门链接固定地图区块，以怪物机制差异和低弹容构建高压 PVE 推进。</span>
+                                <span class="mobile-card-arrow">↗</span>
+                            </span>
+                        </a>
+                    </article>
+
+                    <article id="mobile-project-mobius" class="mobile-project-entry mobile-card-snap">
+                        <a href="https://www.bilibili.com/video/BV1pTtRz5Ekh/" target="_blank" rel="noopener" class="mobile-project-card">
+                            <span class="mobile-project-media">
+                                <img src="image/mobius.jpg" loading="lazy" alt="《Mobius》实机画面">
+                                <span class="mobile-project-number">03</span>
+                            </span>
+                            <span class="mobile-project-copy">
+                                <small>PLATFORM PUZZLE / GAME DESIGN</small>
+                                <strong>《Mobius》</strong>
+                                <span>从边界传送出发，结合重力翻转、机关、陷阱、箱子与迷宫，构建快节奏多样化的解谜体验。</span>
+                                <span class="mobile-card-arrow">↗</span>
+                            </span>
+                        </a>
+                    </article>
+                </div>
+            </div>
+
+            <div class="mobile-carousel-control" aria-label="项目轮播控制">
+                <button id="mobile-project-prev" type="button" aria-label="查看上一个项目">←</button>
+                <span id="mobile-project-counter" aria-live="polite">01 / 03</span>
+                <i aria-hidden="true"></i>
+                <span class="mobile-carousel-hint">SWIPE / DRAG</span>
+                <button id="mobile-project-next" type="button" aria-label="查看下一个项目">→</button>
+            </div>
+        </section>
+
+        <section id="mobile-about" class="mobile-about-section mobile-snap-section">
+            <div class="mobile-section-heading">
+                <span>PROFILE / APPROACH</span>
+                <h2>ABOUT ME</h2>
+            </div>
+
+            <div class="mobile-about-card">
+                <img src="image/icon.jpg" loading="lazy" alt="阮城城个人照片">
+                <div class="mobile-about-copy">
+                    <small>RUAN CHENGCHENG / Y2KEE</small>
+                    <h3>在玩法、技术与表达之间持续探索。</h3>
+                    <p>关注玩家体验如何被规则、关卡与交互共同塑造，也用代码和视觉实验验证想法。</p>
+                    <span>GAME · CODE · ART</span>
+                </div>
+            </div>
+        </section>
+
+        <section id="mobile-more" class="mobile-channels-section mobile-snap-section">
+            <div class="mobile-section-heading">
+                <span>MORE SIGNALS / CHANNEL INDEX</span>
+                <h2>KEEP EXPLORING.</h2>
+            </div>
+
+            <div class="mobile-channel-stack">
+                <a href="game.html" class="mobile-channel-card is-game">
+                    <small>01 / PLAYABLE WORK</small><strong>GAME</strong><span>项目详情、设计职责与实机录像</span><b>↗</b>
+                </a>
+                <a href="blog.html" class="mobile-channel-card is-blog">
+                    <small>02 / DESIGN NOTES</small><strong>BLOG</strong><span>游戏拆解、体验分析与思考</span><b>↗</b>
+                </a>
+                <a href="art.html" class="mobile-channel-card is-art">
+                    <small>03 / VISUAL LAB</small><strong>ART</strong><span>Shader、生成艺术与视觉实验</span><b>↗</b>
+                </a>
+            </div>
+
+            <button id="mobile-footer-contact-trigger" class="mobile-contact-card" type="button">
+                <span><small>AVAILABLE FOR CONVERSATION</small><strong>CONTACT / NOW</strong></span>
+                <b>OPEN ↗</b>
+            </button>
+        </section>
+    </main>
 
     <section id="landing" class="full-screen-section">
         <div class="floating-shape shape-p4-1"></div>
@@ -356,3 +536,4 @@
     <script src="script.js"></script>
 </body>
 </html>
+
